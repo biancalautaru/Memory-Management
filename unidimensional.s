@@ -186,8 +186,9 @@ add_loop:
 
 minim:
 	# fisierul trebuie sa ocupe minim 2 blocuri
+	mov dim, %eax
 	cmp $2, %eax
-	jg start_add
+	ja start_add
 
 	movl $2, dim
 
@@ -238,7 +239,7 @@ add_file:
 
 update_add:
 	cmp dr, %edx
-	jg afisare_add
+	ja afisare_add
 
 	mov desc, %eax
 	movl %eax, (%edi, %edx, 4)
