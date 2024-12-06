@@ -1,5 +1,5 @@
 .data
-	mem: .space 32000
+	mem: .space 4000
 	op: .space 4
 	cnt: .long -1
 	tip: .space 4
@@ -23,7 +23,7 @@ afisare_mem:
 	xor %ecx, %ecx
 
 mem_loop:
-	cmp $8000, %ecx
+	cmp $1000, %ecx
 	je afisare_mem_exit
 
 	# daca ajunge la un element diferit de 0, cauta capatul din dreapta si face afisarea
@@ -38,7 +38,7 @@ mem_loop:
 	mov %ecx, %edx
 
 file_loop:
-	cmp $8000, %edx
+	cmp $1000, %edx
 	je mem_loop_end
 
 	lea mem, %edi
@@ -72,7 +72,7 @@ continue_mem_loop:
 	jmp mem_loop
 
 mem_loop_end:
-	movl $7999, dr
+	movl $999, dr
 
 	pushl dr
 	pushl st
@@ -93,7 +93,7 @@ main:
 	xor %ecx, %ecx
 
 initializare:
-	cmp $8000, %ecx
+	cmp $1000, %ecx
 	jmp start
 
 	movl $0, (%edi, %ecx, 4)
@@ -197,7 +197,7 @@ start_add:
 	xor %edx, %edx
 
 make_add:
-	cmp $8000, %edx
+	cmp $1000, %edx
 	je add_imposibil
 
 	lea mem, %edi
@@ -208,7 +208,7 @@ make_add:
 	mov %edx, %ebx
 
 verif_add:
-	cmp $8000, %ebx
+	cmp $1000, %ebx
 	je add_imposibil
 
 	lea mem, %edi
@@ -276,7 +276,7 @@ get:
 	xor %ecx, %ecx
 
 get_loop:
-	cmp $8000, %ecx
+	cmp $1000, %ecx
 	je get_imposibil
 
 	lea mem, %edi
@@ -294,7 +294,7 @@ make_get:
 	mov %ecx, %edx
 
 verif_get:
-	cmp $8000, %edx
+	cmp $1000, %edx
 	je update_get
 
 	lea mem, %edi
@@ -335,7 +335,7 @@ delete:
 	xor %ecx, %ecx
 
 delete_loop:
-	cmp $8000, %ecx
+	cmp $1000, %ecx
 	je afisare_delete
 
 	lea mem, %edi
@@ -362,7 +362,7 @@ defragmentation:
 	xor %ecx, %ecx
 
 defragmentation_loop:
-	cmp $8000, %ecx
+	cmp $1000, %ecx
 	je adauga_zerouri
 
 	lea mem, %edi
@@ -373,7 +373,7 @@ defragmentation_loop:
 	mov %ecx, %edx
 	
 zero_loop:
-	cmp $8000, %edx
+	cmp $1000, %edx
 	je adauga_zerouri
 
 	lea mem, %edi
@@ -385,7 +385,7 @@ zero_loop:
 	pushl %ecx
 
 move_loop:
-	cmp $8000, %ebx
+	cmp $1000, %ebx
 	je after_move
 
 	movl (%edi, %ebx, 4), %eax
@@ -410,14 +410,14 @@ continue_defragmentation_loop:
 adauga_zerouri:
 	# scade din totalul de zerouri pe cele de la finalul memoriei
 	add %ecx, zerouri
-	subl $8000, zerouri
+	subl $1000, zerouri
 
 	# adauga atatea zerouri la finalul memoriei cate au fost sterse
-	mov $8000, %ecx
+	mov $1000, %ecx
 	sub zerouri, %ecx
 
 adauga_zerouri_loop:
-	cmp $8000, %ecx
+	cmp $1000, %ecx
 	je afisare_defragmentation
 
 	lea mem, %edi
