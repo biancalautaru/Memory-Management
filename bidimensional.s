@@ -6,14 +6,14 @@
 	n: .space 4
 	desc: .space 4
 	dim: .space 4
-    lin: .space 4
-    col: .space 4
+	lin: .space 4
+	col: .space 4
 	st: .space 4
 	dr: .space 4
-    stX: .space 4
-    stY: .space 4
-    endX: .space 4
-    endY: .space 4
+	stX: .space 4
+	stY: .space 4
+	endX: .space 4
+	endY: .space 4
 	fsScanf: .asciz "%ld"
 	fs: .asciz "%d: ((%d, %d), (%d, %d))\n"
 	fsGet: .asciz "((%d, %d), (%d, %d))\n"
@@ -39,16 +39,16 @@ mem_loop:
 	movl (%edi, %ecx, 4), %ebx
 	mov %ebx, desc
 
-    pushl %ecx
-    pushl %ecx
-    call lin_col
-    add $4, %esp
-    popl %ecx
+	pushl %ecx
+	pushl %ecx
+	call lin_col
+	add $4, %esp
+	popl %ecx
 
 	mov lin, %eax
-    mov %eax, stX
-    mov col, %eax
-    mov %eax, stY
+	mov %eax, stX
+	mov col, %eax
+	mov %eax, stY
 
 	mov %ecx, %edx
 
@@ -61,27 +61,27 @@ file_loop:
 	cmp %ebx, (%edi, %edx, 4)
 	je continue_file_loop
 
-    mov %edx, %eax
-    dec %eax
+	mov %edx, %eax
+	dec %eax
 	pushl %ecx
-    pushl %edx
-    pushl %eax
-    call lin_col
-    add $4, %esp
-    popl %edx
-    popl %ecx
+	pushl %edx
+	pushl %eax
+	call lin_col
+	add $4, %esp
+	popl %edx
+	popl %ecx
 
 	mov lin, %eax
-    mov %eax, endX
-    mov col, %eax
-    mov %eax, endY
+	mov %eax, endX
+	mov col, %eax
+	mov %eax, endY
 
 	pushl %ecx
 	pushl %edx
 	pushl endY
 	pushl endX
-    pushl stY
-    pushl stX
+	pushl stY
+	pushl stX
 	pushl desc
 	pushl $fs
 	call printf
@@ -103,19 +103,19 @@ continue_mem_loop:
 mem_loop_end:
 	movl $63, %eax
 
-    pushl %eax
-    call lin_col
-    add $4, %esp
+	pushl %eax
+	call lin_col
+	add $4, %esp
 
 	mov lin, %eax
-    mov %eax, endX
-    mov col, %eax
-    mov %eax, endY
+	mov %eax, endX
+	mov col, %eax
+	mov %eax, endY
 
 	pushl endY
 	pushl endX
-    pushl stY
-    pushl stX
+	pushl stY
+	pushl stX
 	pushl desc
 	pushl $fs
 	call printf
@@ -126,19 +126,19 @@ afisare_mem_exit:
 	ret
 
 lin_col:
-    pushl %ebp
+	pushl %ebp
 	mov %esp, %ebp
 
-    # lin = edx / 1000, col = edx % 1000
-    movl 8(%ebp), %eax
-    xor %edx, %edx
-    mov $1000, %ebx
-    div %ebx
-    mov %eax, lin
-    mov %edx, col
+	# lin = edx / 1000, col = edx % 1000
+	movl 8(%ebp), %eax
+	xor %edx, %edx
+	mov $1000, %ebx
+	div %ebx
+	mov %eax, lin
+	mov %edx, col
 
-    popl %ebp
-    ret
+	popl %ebp
+	ret
 
 .global main
 
@@ -162,7 +162,7 @@ start:
 	call scanf
 	add $8, %esp
 
-loop:
+	loop:
 	# creste counterul de operatii
 	addl $1, cnt
 
@@ -242,7 +242,7 @@ add_loop:
 minim:
 	# fisierul trebuie sa ocupe minim 2 blocuri
 	mov dim, %eax
-    cmp $2, %eax
+	cmp $2, %eax
 	ja start_add
 
 	movl $2, dim
@@ -259,21 +259,21 @@ make_add:
 	cmpl $0, (%edi, %edx, 4)
 	jne continue_make_add
 
-    # calculeaza linia si coloana la care se gaseste zeroul curent
-    pushl %ecx
-    pushl %edx
-    pushl %edx
-    call lin_col
-    add $4, %esp
-    popl %edx
-    popl %ecx
+	# calculeaza linia si coloana la care se gaseste zeroul curent
+	pushl %ecx
+	pushl %edx
+	pushl %edx
+	call lin_col
+	add $4, %esp
+	popl %edx
+	popl %ecx
 
-    # verifica daca exista dim blocuri pe linia curenta
-    mov col, %eax
-    add dim, %eax
-    dec %eax
-    cmp $1000, %eax
-    jae continue_make_add
+	# verifica daca exista dim blocuri pe linia curenta
+	mov col, %eax
+	add dim, %eax
+	dec %eax
+	cmp $1000, %eax
+	jae continue_make_add
 
 	# verifica daca exista dim blocuri disponibile incepand cu cel curent
 	mov %edx, %ebx
@@ -321,25 +321,25 @@ update_add:
 add_imposibil:
 	movl $0, stX
 	movl $0, stY
-    movl $0, endX
-    movl $0, endY
+	movl $0, endX
+	movl $0, endY
 
 afisare_add:
-    mov lin, %eax
-    mov %eax, stX
-    mov %eax, endX
-    mov col, %eax
-    mov %eax, stY
-    add dim, %eax
-    dec %eax
-    mov %eax, endY
+	mov lin, %eax
+	mov %eax, stX
+	mov %eax, endX
+	mov col, %eax
+	mov %eax, stY
+	add dim, %eax
+	dec %eax
+	mov %eax, endY
 
 	# afiseaza rezultatul operatiei add
 	pushl %ecx
 	pushl endY
-    pushl endX
-    pushl stY
-    pushl stX
+	pushl endX
+	pushl stY
+	pushl stX
 	pushl desc
 	pushl $fs
 	call printf
@@ -374,16 +374,16 @@ get_loop:
 make_get:
 	mov %ecx, st
 
-    pushl %ecx
-    pushl %ecx
-    call lin_col
-    add $4, %esp
-    popl %ecx
+	pushl %ecx
+	pushl %ecx
+	call lin_col
+	add $4, %esp
+	popl %ecx
 
-    mov lin, %eax
-    mov %eax, stX
-    mov col, %eax
-    mov %eax, stY
+	mov lin, %eax
+	mov %eax, stX
+	mov col, %eax
+	mov %eax, stY
 
 	# cauta capatul din dreapta
 	mov %ecx, %edx
@@ -404,32 +404,32 @@ update_get:
 	dec %edx
 	mov %edx, dr
 
-    pushl %ecx
-    pushl %edx
-    call lin_col
-    add $4, %esp
-    popl %edx
+	pushl %ecx
+	pushl %edx
+	call lin_col
+	add $4, %esp
+	popl %edx
 
-    mov lin, %eax
-    mov %eax, endX
-    mov col, %eax
-    mov %eax, endY
+	mov lin, %eax
+	mov %eax, endX
+	mov col, %eax
+	mov %eax, endY
 
 	jmp afisare_get
 
 get_imposibil:
 	movl $0, stX
 	movl $0, stY
-    movl $0, endX
-    movl $0, endY
+	movl $0, endX
+	movl $0, endY
 
 afisare_get:
 	# afiseaza rezultatul operatiei get
-    pushl %ecx
+	pushl %ecx
 	pushl endY
-    pushl endX
-    pushl stY
-    pushl stX
+	pushl endX
+	pushl stY
+	pushl stX
 	pushl $fsGet
 	call printf
 	add $20, %esp
@@ -482,7 +482,7 @@ defragmentation_loop:
 
 	# cauta fisierul urmator
 	mov %ecx, %edx
-	
+
 zero_loop:
 	cmp $1000000, %edx
 	je afisare_defragmentation
@@ -528,7 +528,7 @@ check_size:
 	popl %edx
 	popl %ecx
 	popl %ebx
-	
+
 	mov dim, %eax
 	add col, %eax
 	dec %eax
@@ -578,7 +578,7 @@ check_again:
 continue_zero_loop:
 	inc %edx
 	jmp zero_loop
-	
+
 continue_defragmentation_loop:
 	inc %ecx
 	jmp defragmentation_loop
