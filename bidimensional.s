@@ -1,5 +1,5 @@
 .data
-	mem: .space 4000000
+	mem: .space 4194304
 	op: .space 4
 	cnt: .long -1
 	tip: .space 4
@@ -28,7 +28,7 @@ afisare_mem:
 	xor %ecx, %ecx
 
 mem_loop:
-	cmp $1000000, %ecx
+	cmp $1048576, %ecx
 	je afisare_mem_exit
 
 	# daca ajunge la un element diferit de 0, cauta capatul din dreapta si face afisarea
@@ -53,7 +53,7 @@ mem_loop:
 	mov %ecx, %edx
 
 file_loop:
-	cmp $1000000, %edx
+	cmp $1048576, %edx
 	je mem_loop_end
 
 	lea mem, %edi
@@ -129,10 +129,10 @@ lin_col:
 	pushl %ebp
 	mov %esp, %ebp
 
-	# lin = edx / 1000, col = edx % 1000
+	# lin = edx / 1024, col = edx % 1024
 	movl 8(%ebp), %eax
 	xor %edx, %edx
-	mov $1000, %ebx
+	mov $1024, %ebx
 	div %ebx
 	mov %eax, lin
 	mov %edx, col
@@ -148,7 +148,7 @@ main:
 	xor %ecx, %ecx
 
 initializare:
-	cmp $1000000, %ecx
+	cmp $1048576, %ecx
 	jmp start
 
 	movl $0, (%edi, %ecx, 4)
@@ -252,7 +252,7 @@ start_add:
 	xor %edx, %edx
 
 make_add:
-	cmp $1000000, %edx
+	cmp $1048576, %edx
 	je add_imposibil
 
 	lea mem, %edi
@@ -272,14 +272,14 @@ make_add:
 	mov col, %eax
 	add dim, %eax
 	dec %eax
-	cmp $1000, %eax
+	cmp $1024, %eax
 	jae continue_make_add
 
 	# verifica daca exista dim blocuri disponibile incepand cu cel curent
 	mov %edx, %ebx
 
 verif_add:
-	cmp $1000000, %ebx
+	cmp $1048576, %ebx
 	je add_imposibil
 
 	lea mem, %edi
@@ -360,7 +360,7 @@ get:
 	xor %ecx, %ecx
 
 get_loop:
-	cmp $1000000, %ecx
+	cmp $1048576, %ecx
 	je get_imposibil
 
 	lea mem, %edi
@@ -389,7 +389,7 @@ make_get:
 	mov %ecx, %edx
 
 verif_get:
-	cmp $1000000, %edx
+	cmp $1048576, %edx
 	je update_get
 
 	lea mem, %edi
@@ -448,7 +448,7 @@ delete:
 	xor %ecx, %ecx
 
 delete_loop:
-	cmp $1000000, %ecx
+	cmp $1048576, %ecx
 	je afisare_delete
 
 	lea mem, %edi
@@ -473,7 +473,7 @@ defragmentation:
 	xor %ecx, %ecx
 
 defragmentation_loop:
-	cmp $1000000, %ecx
+	cmp $1048576, %ecx
 	je afisare_defragmentation
 
 	lea mem, %edi
@@ -484,7 +484,7 @@ defragmentation_loop:
 	mov %ecx, %edx
 
 zero_loop:
-	cmp $1000000, %edx
+	cmp $1048576, %edx
 	je afisare_defragmentation
 
 	lea mem, %edi
@@ -499,7 +499,7 @@ zero_loop:
 	mov %edx, %ebx
 
 file_end_loop:
-	cmp $1000000, %ebx
+	cmp $1048576, %ebx
 	je make_size
 
 	mov desc, %eax
@@ -532,7 +532,7 @@ check_size:
 	mov dim, %eax
 	add col, %eax
 	dec %eax
-	cmp $1000, %eax
+	cmp $1024, %eax
 	jae check_again
 
 	# pune zerouri de la edx la ebx, in locul fisierului desc
@@ -593,3 +593,4 @@ exit:
 	mov $1, %eax
 	xor %ebx, %ebx
 	int $0x80
+
