@@ -248,6 +248,9 @@ minim:
 	movl $2, dim
 
 start_add:
+	cmpl $1024, dim
+	ja add_imposibil
+
 	# parcurge memoria pana ajunge la un spatiu disponibil
 	xor %edx, %edx
 
@@ -319,10 +322,19 @@ update_add:
 	jmp update_add
 
 add_imposibil:
-	movl $0, stX
-	movl $0, stY
-	movl $0, endX
-	movl $0, endY
+	pushl %ecx
+	pushl $0
+	pushl $0
+	pushl $0
+	pushl $0
+	pushl desc
+	pushl $fs
+	call printf
+	add $24, %esp
+	popl %ecx
+
+	inc %ecx
+	jmp add_loop
 
 afisare_add:
 	mov lin, %eax
@@ -593,4 +605,3 @@ exit:
 	mov $1, %eax
 	xor %ebx, %ebx
 	int $0x80
-
