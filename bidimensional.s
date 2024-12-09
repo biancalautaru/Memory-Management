@@ -89,6 +89,14 @@ file_loop:
 	popl %edx
 	popl %ecx
 
+	pushl %ecx
+	pushl %edx
+	pushl $0
+	call fflush
+	add $4, %esp
+	popl %edx
+	popl %ecx
+
 	mov %edx, %ecx
 	jmp mem_loop
 
@@ -120,6 +128,10 @@ mem_loop_end:
 	pushl $fs
 	call printf
 	add $24, %esp
+
+	pushl $0
+	call fflush
+	add $4, %esp
 
 afisare_mem_exit:
 	popl %ebp
@@ -286,7 +298,7 @@ verif_add:
 	je add_imposibil
 
 	lea mem, %edi
-	cmpl $0, (%edi, %edx, 4)
+	cmpl $0, (%edi, %ebx, 4)
 	jne continue_make_add
 
 	mov %ebx, %eax
@@ -333,6 +345,12 @@ add_imposibil:
 	add $24, %esp
 	popl %ecx
 
+	pushl %ecx
+	pushl $0
+	call fflush
+	add $4, %esp
+	popl %ecx
+
 	inc %ecx
 	jmp add_loop
 
@@ -356,6 +374,12 @@ afisare_add:
 	pushl $fs
 	call printf
 	add $24, %esp
+	popl %ecx
+
+	pushl %ecx
+	pushl $0
+	call fflush
+	add $4, %esp
 	popl %ecx
 
 	inc %ecx
@@ -445,6 +469,12 @@ afisare_get:
 	pushl $fsGet
 	call printf
 	add $20, %esp
+	popl %ecx
+
+	pushl %ecx
+	pushl $0
+	call fflush
+	add $4, %esp
 	popl %ecx
 
 	jmp loop

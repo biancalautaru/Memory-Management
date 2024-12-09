@@ -8,7 +8,6 @@
 	dim: .space 4
 	st: .space 4
 	dr: .space 4
-	zerouri: .space 4
 	fsScanf: .asciz "%ld"
 	fs: .asciz "%d: (%d, %d)\n"
 	fsGet: .asciz "(%d, %d)\n"
@@ -60,6 +59,14 @@ file_loop:
 	popl %edx
 	popl %ecx
 
+	pushl %ecx
+	pushl %edx
+	pushl $0
+	call fflush
+	add $4, %esp
+	popl %edx
+	popl %ecx
+
 	mov %edx, %ecx
 	jmp mem_loop
 
@@ -80,6 +87,10 @@ mem_loop_end:
 	pushl $fs
 	call printf
 	add $16, %esp
+
+	pushl $0
+	call fflush
+	add $4, %esp
 
 afisare_mem_exit:
 	popl %ebp
@@ -212,8 +223,8 @@ verif_add:
 	je add_imposibil
 
 	lea mem, %edi
-	cmpl $0, (%edi, %edx, 4)
-	jne continue_make_add
+	cmpl $0, (%edi, %ebx, 4)
+	jne continue_next_make_add
 
 	mov %ebx, %eax
 	sub %edx, %eax
@@ -226,6 +237,11 @@ verif_add:
 	jmp verif_add
 
 continue_make_add:
+	inc %edx
+	jmp make_add
+
+continue_next_make_add:
+	mov %ebx, %edx
 	inc %edx
 	jmp make_add
 
@@ -260,6 +276,12 @@ afisare_add:
 	pushl $fs
 	call printf
 	add $16, %esp
+	popl %ecx
+
+	pushl %ecx
+	pushl $0
+	call fflush
+	add $4, %esp
 	popl %ecx
 
 	inc %ecx
@@ -322,6 +344,10 @@ afisare_get:
 	call printf
 	add $12, %esp
 
+	pushl $0
+	call fflush
+	add $4, %esp
+
 	jmp loop
 
 delete:
@@ -356,75 +382,93 @@ afisare_delete:
 	jmp loop
 
 defragmentation:
-	movl $0, zerouri
-
 	# cauta inceputul unei secvente de 0
 	xor %ecx, %ecx
 
 defragmentation_loop:
 	cmp $1024, %ecx
-	je adauga_zerouri
+	je afisare_defragmentation
 
 	lea mem, %edi
 	cmpl $0, (%edi, %ecx, 4)
 	jne continue_defragmentation_loop
 
-	# cauta capatul din dreapta al secventei de 0
+	# cauta fisierul urmator
 	mov %ecx, %edx
-	
+
 zero_loop:
 	cmp $1024, %edx
-	je adauga_zerouri
+	je afisare_defragmentation
 
 	lea mem, %edi
 	cmpl $0, (%edi, %edx, 4)
 	je continue_zero_loop
 
-	# muta elementele de la edx pana la final incat sa inceapa la ecx
+	# salveaza descriptorul fisierului curent
+	movl (%edi, %edx, 4), %eax
+	mov %eax, desc
+
+	# cauta capatul din dreapta al fisierului desc
 	mov %edx, %ebx
-	pushl %ecx
 
-move_loop:
+file_end_loop:
 	cmp $1024, %ebx
-	je after_move
+	je make_size
 
-	movl (%edi, %ebx, 4), %eax
-	movl %eax, (%edi, %ecx, 4)
+	mov desc, %eax
+	cmp %eax, (%edi, %ebx, 4)
+	jne make_size
+
+	inc %ebx
+	jmp file_end_loop
+
+make_size:
+	# salveaza dimensiunea fisierului curent
+	dec %ebx
+	mov %ebx, %eax
+	sub %edx, %eax
+	inc %eax
+	mov %eax, dim
+
+	# pune zerouri de la edx la ebx, in locul fisierului desc
+	mov %edx, %eax
+
+fill_zerouri_loop:
+	cmp %ebx, %eax
+	ja move_file
+
+	movl $0, (%edi, %eax, 4)
+
+	inc %eax
+	jmp fill_zerouri_loop
+
+move_file:
+	# pune fisierul curent intre ecx si ecx + dim - 1
+	mov %ecx, %edx
+	add dim, %edx
+	dec %edx
+
+move_file_loop:
+	cmp %edx, %ecx
+	ja move_file_loop_end
+
+	mov desc, %eax
+	mov %eax, (%edi, %ecx, 4)
 
 	inc %ecx
-	inc %ebx
-	jmp move_loop
+	jmp move_file_loop
+
+move_file_loop_end:
+	dec %ecx
+	jmp continue_defragmentation_loop
 
 continue_zero_loop:
-	addl $1, zerouri
 	inc %edx
 	jmp zero_loop
 
-after_move:
-	popl %ecx
-	
 continue_defragmentation_loop:
 	inc %ecx
 	jmp defragmentation_loop
-
-adauga_zerouri:
-	# scade din totalul de zerouri pe cele de la finalul memoriei
-	add %ecx, zerouri
-	subl $1024, zerouri
-
-	# adauga atatea zerouri la finalul memoriei cate au fost sterse
-	mov $1024, %ecx
-	sub zerouri, %ecx
-
-adauga_zerouri_loop:
-	cmp $1024, %ecx
-	je afisare_defragmentation
-
-	lea mem, %edi
-	movl $0, (%edi, %ecx, 4)
-
-	inc %ecx
-	jmp adauga_zerouri_loop
 
 afisare_defragmentation:
 	# afiseaza memoria dupa defragmentation
@@ -436,4 +480,3 @@ exit:
 	mov $1, %eax
 	xor %ebx, %ebx
 	int $0x80
-
