@@ -224,7 +224,7 @@ verif_add:
 
 	lea mem, %edi
 	cmpl $0, (%edi, %ebx, 4)
-	jne continue_next_make_add
+	jne continue_make_add
 
 	mov %ebx, %eax
 	sub %edx, %eax
@@ -237,11 +237,6 @@ verif_add:
 	jmp verif_add
 
 continue_make_add:
-	inc %edx
-	jmp make_add
-
-continue_next_make_add:
-	mov %ebx, %edx
 	inc %edx
 	jmp make_add
 
