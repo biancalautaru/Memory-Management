@@ -1,3 +1,5 @@
+.section .note.GNU-stack,"",@progbits
+
 .data
 	mem: .space 4096
 	op: .space 4
