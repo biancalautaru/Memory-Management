@@ -1,4 +1,5 @@
-Nota: 8/10
+***Nota: 8/10***
+
 # [Tema laborator 2024.pdf](https://github.com/user-attachments/files/18274686/Tema.laborator.2024.pdf)
 
 ## Formularea temei
